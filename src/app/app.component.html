@@ -1,0 +1,20 @@
+<ion-app>
+  <ion-menu side="start" menuId="main-menu" contentId="main">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item routerLink="/vinhos">Vinhos</ion-item>
+        <ion-item routerLink="/clientes">Clientes</ion-item>
+        <ion-item routerLink="/pedidos">Pedidos</ion-item>
+        <ion-item routerLink="/rota">Roteirizar</ion-item>
+        <ion-item (click)="logout()">Sair</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main"></ion-router-outlet>
+</ion-app>

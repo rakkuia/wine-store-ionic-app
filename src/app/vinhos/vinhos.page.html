@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Vinhos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let vinho of vinhos">
+      <ion-label>
+        <h2>{{ vinho.nome }}</h2>
+        <p>
+          {{ vinho.tipo }} • Safra: {{ vinho.safra }} • R$ {{ vinho.preco |
+          number: '1.2-2' }}
+        </p>
+      </ion-label>
+
+      <ion-buttons slot="end" *ngIf="admin">
+        <ion-button color="medium" (click)="editarVinho(vinho)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="excluirVinho(vinho)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    color="primary"
+    *ngIf="admin"
+    (click)="abrirCadastro()"
+    >Cadastrar Vinho</ion-button
+  >
+</ion-content>

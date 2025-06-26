@@ -1,0 +1,7 @@
+{
+  "name": "vinhoApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
