@@ -34,7 +34,7 @@ export class VinhosPage implements OnInit {
 
   ngOnInit() {
     this.vinhos = this.vinhoService.getVinhos();
-    this.admin = this.auth.getPerfil() === 'admin';
+    this.admin = this.auth.getTipo() === 'admin';
   }
 
   adicionarVinho(vinho: Vinho) {

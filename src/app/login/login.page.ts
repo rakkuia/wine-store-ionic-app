@@ -24,7 +24,7 @@ export class LoginPage {
 
   async fazerLogin() {
     if (this.auth.login(this.email, this.senha)) {
-      this.router.navigate(['/vinhos']);
+      this.router.navigate(['/home']);
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Erro',

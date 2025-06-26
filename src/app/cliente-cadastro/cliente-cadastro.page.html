@@ -1,0 +1,14 @@
+<ion-header><ion-toolbar><ion-title>Cadastro de Cliente</ion-title></ion-toolbar></ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item><ion-label position="stacked">Nome</ion-label><ion-input [(ngModel)]="cliente.nome"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">CNPJ/CPF</ion-label><ion-input [(ngModel)]="cliente.documento"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">Endereço</ion-label><ion-input [(ngModel)]="cliente.endereco"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">Cidade</ion-label><ion-input [(ngModel)]="cliente.cidade"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">Estado</ion-label><ion-input [(ngModel)]="cliente.estado"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">Responsável</ion-label><ion-input [(ngModel)]="cliente.responsavel"></ion-input></ion-item>
+  <ion-item><ion-label position="stacked">Contato</ion-label><ion-input [(ngModel)]="cliente.contato"></ion-input></ion-item>
+
+  <ion-button expand="full" (click)="salvar()">Salvar</ion-button>
+  <ion-button expand="full" color="light" (click)="cancelar()">Cancelar</ion-button>
+</ion-content>

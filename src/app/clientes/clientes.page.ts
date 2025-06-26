@@ -3,13 +3,16 @@ import { AlertController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Cliente, ClienteService } from '../services/cliente.service';
-import { ModalController } from '@ionic/angular/standalone';
+import { IonMenuToggle, ModalController } from '@ionic/angular/standalone';
+import { ClienteCadastroPage } from '../cliente-cadastro/cliente-cadastro.page';
+import { createOutline, trashOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.page.html',
   styleUrls: ['./clientes.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, IonMenuToggle],
 })
 export class ClientesPage implements OnInit {
   clientes: Cliente[] = [];
@@ -18,7 +21,13 @@ export class ClientesPage implements OnInit {
     private clienteService: ClienteService,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController
-  ) {}
+  ) {
+    addIcons({
+      'create-outline': createOutline,
+      'trash-outline': trashOutline,
+    });
+    // Removed workaround for IonMenuToggle as 'toggle' does not exist on IonMenuToggle
+  }
 
   ngOnInit() {
     this.clientes = this.clienteService.getClientes();

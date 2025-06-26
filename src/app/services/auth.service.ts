@@ -3,18 +3,17 @@ export type PerfilUsuario = 'admin' | 'representante';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-private isLoggedIn = false;
-  private perfil: PerfilUsuario = 'representante'; 
-
+  private isLoggedIn = false;
+  private usuario: { nome: string; tipo: PerfilUsuario } | null = null;
   login(email: string, senha: string): boolean {
     if (email === 'admin' && senha === 'admin') {
       this.isLoggedIn = true;
-      this.perfil = 'admin';
+      this.usuario = { nome: 'Admin', tipo: 'admin' };
       return true;
     }
     if (email === 'representante' && senha === 'representante') {
       this.isLoggedIn = true;
-      this.perfil = 'representante';
+      this.usuario = { nome: 'Representante', tipo: 'representante' };
       return true;
     }
     return false;
@@ -22,14 +21,14 @@ private isLoggedIn = false;
 
   logout() {
     this.isLoggedIn = false;
-    this.perfil = 'representante';
+    this.usuario = null;
   }
 
-  checkAuth(): boolean {
-    return this.isLoggedIn;
+  isAutenticado(): boolean {
+    return !!this.usuario;
   }
 
-  getPerfil(): PerfilUsuario {
-    return this.perfil;
+  getTipo(): 'admin' | 'representante' | null {
+    return this.usuario?.tipo ?? null;
   }
 }
