@@ -1,13 +1,27 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>pedidos</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-header
+  ><ion-toolbar><ion-title>Pedidos</ion-title></ion-toolbar></ion-header
+>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pedidos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-text color="primary" *ngIf="pedidos.length != 0">
+    <h4>Clique em um pedido existente para adicionar mais itens</h4></ion-text
+  >
+  <ion-list>
+    <ion-item *ngFor="let pedido of pedidos" (click)="editar(pedido)">
+      <ion-label>
+        <h2>{{ pedido.clienteNome }}</h2>
+        <p>{{ pedido.data }} | {{ pedido.itens.length }} itens</p>
+        <strong>Total: R$ {{ pedido.total | number:'1.2-2' }}</strong>
+      </ion-label>
+      <ion-button
+        slot="end"
+        color="danger"
+        (click)="excluir(pedido); $event.stopPropagation()"
+      >
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" (click)="novoPedido()">Novo Pedido</ion-button>
 </ion-content>

@@ -12,7 +12,7 @@ import { addIcons } from 'ionicons';
   templateUrl: './clientes.page.html',
   styleUrls: ['./clientes.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, IonMenuToggle],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class ClientesPage implements OnInit {
   clientes: Cliente[] = [];
@@ -26,7 +26,6 @@ export class ClientesPage implements OnInit {
       'create-outline': createOutline,
       'trash-outline': trashOutline,
     });
-    // Removed workaround for IonMenuToggle as 'toggle' does not exist on IonMenuToggle
   }
 
   ngOnInit() {

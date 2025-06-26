@@ -1,13 +1,27 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>rotas</ion-title>
+    <ion-title>Gerador de Rotas v1</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">rotas</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Endereço de Partida</ion-label>
+    <ion-input [(ngModel)]="enderecoPartida" placeholder="Ex: Rua X, Bairro, Cidade"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Cliente Destino</ion-label>
+    <ion-select [(ngModel)]="clienteDestinoId">
+      <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">
+        {{ cliente.nome }} - {{ cliente.endereco }}, {{ cliente.cidade }} - {{ cliente.estado }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="block" (click)="gerarRota()">Gerar Rota</ion-button>
+<!-- 
+  <ion-button *ngIf="urlRota" expand="block" color="success" [href]="urlRota" target="_blank">
+    Abrir no Google Maps
+  </ion-button> -->
 </ion-content>
