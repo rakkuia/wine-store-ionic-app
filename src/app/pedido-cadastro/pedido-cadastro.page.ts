@@ -46,7 +46,9 @@ export class PedidoCadastroPage implements OnInit {
 
   ngOnInit() {
     this.clientes = this.clienteService.getClientes();
-    this.vinhos = this.vinhoService.getVinhos();
+    this.vinhoService.getVinhos().subscribe((vinhos) => {
+      this.vinhos = vinhos;
+    });
     this.representantes = this.representanteService.getRepresentantes();
     if (this.pedido && this.pedido.itens) {
       this.quantidades = {};

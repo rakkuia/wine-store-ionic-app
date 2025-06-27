@@ -31,15 +31,32 @@ export class VinhosPage implements OnInit {
       'trash-outline': trashOutline,
     });
   }
-
   ngOnInit() {
-    this.vinhos = this.vinhoService.getVinhos();
+    this.carregarVinhos();
     this.admin = this.auth.getTipo() === 'admin';
   }
 
-  adicionarVinho(vinho: Vinho) {
-    this.vinhoService.addVinho(vinho);
-    this.vinhos = this.vinhoService.getVinhos();
+  carregarVinhos() {
+    this.vinhoService.getVinhos().subscribe({
+      next: (vinhos) => {
+        this.vinhos = vinhos;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar vinhos', err);
+        // Trate erros aqui (ex: mostrar alerta)
+      }
+    });
+  }
+
+  adicionarVinho(vinho: Omit<Vinho, 'id'>) {
+    this.vinhoService.addVinho(vinho).subscribe({
+      next: (novoVinho) => {
+        this.vinhos = [...this.vinhos, novoVinho];
+      },
+      error: (err) => {
+        console.error('Erro ao adicionar vinho', err);
+      }
+    });
   }
 
   async abrirCadastro() {
@@ -64,12 +81,26 @@ export class VinhosPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.vinhoService.atualizarVinho(result.data);
-        this.vinhos = this.vinhoService.getVinhos();
+        this.atualizarVinho(result.data);
       }
     });
 
     await modal.present();
+  }
+
+  atualizarVinho(vinho: Vinho) {
+    this.vinhoService.atualizarVinho(vinho).subscribe({
+      next: () => {
+        const index = this.vinhos.findIndex(v => v.id === vinho.id);
+        if (index > -1) {
+          this.vinhos[index] = vinho;
+          this.vinhos = [...this.vinhos]; // Atualiza a referência
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar vinho', err);
+      }
+    });
   }
 
   async excluirVinho(vinho: Vinho) {
@@ -81,13 +112,23 @@ export class VinhosPage implements OnInit {
         {
           text: 'Excluir',
           handler: () => {
-            this.vinhoService.removerVinho(vinho.id);
-            this.vinhos = this.vinhoService.getVinhos();
+            this.removerVinho(vinho.id);
           },
         },
       ],
     });
 
     await alert.present();
+  }
+
+  removerVinho(id: number) {
+    this.vinhoService.removerVinho(id).subscribe({
+      next: () => {
+        this.vinhos = this.vinhos.filter(v => v.id !== id);
+      },
+      error: (err) => {
+        console.error('Erro ao remover vinho', err);
+      }
+    });
   }
 }

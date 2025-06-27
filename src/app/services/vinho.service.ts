@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 export interface Vinho {
   id: number;
@@ -10,29 +13,39 @@ export interface Vinho {
 
 @Injectable({ providedIn: 'root' })
 export class VinhoService {
-  private vinhos: Vinho[] = [
-    { id: 1, nome: 'Cabernet Sauvignon', tipo: 'Tinto', safra: '2021', preco: 89.9 },
-    { id: 2, nome: 'Chardonnay Reserva', tipo: 'Branco', safra: '2020', preco: 69.5 },
-    { id: 3, nome: 'Rosé da Serra', tipo: 'Rosé', safra: '2022', preco: 55.0 },
-  ];
+  private apiUrl = 'http://localhost:3000/api/vinhos';
 
-  getVinhos(): Vinho[] {
-    return this.vinhos;
+  constructor(private http: HttpClient) {}
+  getVinhos(): Observable<Vinho[]> {
+    return this.http
+      .get<Vinho[]>(this.apiUrl)
+      .pipe(catchError(this.handleError<Vinho[]>('getVinhos', [])));
   }
 
-  addVinho(vinho: Vinho) {
-  const novo = { ...vinho, id: Date.now() };
-  this.vinhos.push(novo);
-}
-
-atualizarVinho(vinhoEditado: Vinho) {
-  const index = this.vinhos.findIndex(v => v.id === vinhoEditado.id);
-  if (index > -1) {
-    this.vinhos[index] = vinhoEditado;
+  addVinho(vinho: Omit<Vinho, 'id'>): Observable<Vinho> {
+    return this.http
+      .post<Vinho>(this.apiUrl, vinho)
+      .pipe(catchError(this.handleError<Vinho>('addVinho')));
   }
-}
 
-removerVinho(id: number) {
-  this.vinhos = this.vinhos.filter(v => v.id !== id);
-}
+  atualizarVinho(vinho: Vinho): Observable<Vinho> {
+    const url = `${this.apiUrl}/${vinho.id}`;
+    return this.http
+      .put<Vinho>(url, vinho)
+      .pipe(catchError(this.handleError<Vinho>('atualizarVinho')));
+  }
+
+  removerVinho(id: number): Observable<any> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .delete(url)
+      .pipe(catchError(this.handleError('removerVinho')));
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} falhou: ${error.message}`);
+      return of(result as T);
+    };
+  }
 }
