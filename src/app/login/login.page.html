@@ -1,13 +1,20 @@
 <ion-header><ion-toolbar><ion-title>Login</ion-title></ion-toolbar></ion-header>
 
-<ion-content class="ion-padding">
-  <ion-item>
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #4A0707;" class="ion-padding">
+  <img src="../../assets/logo.png" alt="Logo" style="width: 250px; height: 250px; margin-bottom: 20px;">
+  <ion-item style="--background: white; --color: #333; margin-bottom: 8px; border-radius: 8px;">
     <ion-label position="floating">Email</ion-label>
     <ion-input [(ngModel)]="email" type="email"></ion-input>
   </ion-item>
-  <ion-item>
+  <ion-item style="--background: white; --color: #333; margin-bottom: 8px; border-radius: 8px;">
     <ion-label position="floating">Senha</ion-label>
     <ion-input [(ngModel)]="senha" type="password"></ion-input>
   </ion-item>
-  <ion-button expand="full" (click)="fazerLogin()">Entrar</ion-button>
-</ion-content>
+  <ion-button 
+    color="light"
+    fill="outline"
+    style="background: #A47E6F; color: white; font-weight: bold; border-radius: 25px; margin-top: 30px;"
+    expand="full" 
+    (click)="fazerLogin()"
+    >Entrar</ion-button>
+</div>

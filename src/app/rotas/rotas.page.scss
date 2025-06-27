@@ -1,0 +1,26 @@
+ion-content {
+  --background: #4a0707;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-list {
+  background: transparent;
+  flex: 1;
+  overflow-y: auto;
+  
+  ion-item {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: white;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    
+    h2 {
+      font-weight: bold;
+    }
+    
+    p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}

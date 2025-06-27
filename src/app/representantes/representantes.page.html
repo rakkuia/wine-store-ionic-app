@@ -11,8 +11,8 @@
 <ion-content style="color: red !important;">
   <ion-list>
     <ion-item *ngFor="let representante of representantes">
-      <ion-item>
-        <ion-label>
+      <ion-item style="width: max-content;">
+        <ion-label style="width: max-content;">
           <h2>{{ representante.nome }}</h2>
           <p>Email: {{ representante.email }}</p>
           <p>Telefone: {{ representante.telefone }}</p>
@@ -28,5 +28,11 @@
       </ion-item>
     </ion-item>
   </ion-list>
-    <ion-button *ngIf="admin" expand="block" (click)="abrirCadastro()">Novo Representante</ion-button>
+  <ion-button 
+    *ngIf="admin" 
+    expand="block"
+    color="light"
+    fill="outline"
+    style="background: #A47E6F; color: white; font-weight: bold; border-radius: 25px;"
+    (click)="abrirCadastro()">Novo Representante</ion-button>
 </ion-content>
