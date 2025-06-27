@@ -16,9 +16,14 @@ import { AuthService } from '../services/auth.service';
   imports: [IonicModule, CommonModule, FormsModule],
 })
 export class PedidosPage implements OnInit {
+
+
+
+contarItens(pedido: Pedido): number {
+  return pedido.itens.reduce((soma, item) => soma + item.quantidade, 0);
+}
   pedidos: Pedido[] = [];
   admin: boolean = false;
-
   constructor(
     private pedidoService: PedidoService,
     private modalCtrl: ModalController,
@@ -80,6 +85,7 @@ export class PedidosPage implements OnInit {
         this.pedidoService.updatePedido(res.data);
         this.pedidos = this.pedidoService.getPedidos();
       }
+      console.log(this.pedidos)
     });
 
     await modal.present();

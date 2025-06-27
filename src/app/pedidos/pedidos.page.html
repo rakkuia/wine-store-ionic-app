@@ -7,13 +7,15 @@
     <h4>Clique em um pedido existente para adicionar mais itens</h4></ion-text
   >
   <ion-list>
-    <ion-item *ngFor="let pedido of pedidos" (click)="editar(pedido)">
+    <ion-item *ngFor="let pedido of pedidos">
       <ion-label>
         <h2>{{ pedido.clienteNome }}</h2>
-        <p>{{ pedido.data }} | {{ pedido.itens.length }} itens</p>
+        <p>
+          {{ pedido.data }} | {{ contarItens(pedido) }} itens
+        </p>
         <strong>Total: R$ {{ pedido.total | number:'1.2-2' }}</strong>
       </ion-label>
-       <ion-buttons slot="end" *ngIf="admin">
+      <ion-buttons slot="end" *ngIf="admin">
         <ion-button color="medium" (click)="editar(pedido)">
           <ion-icon slot="icon-only" name="create-outline"></ion-icon>
         </ion-button>

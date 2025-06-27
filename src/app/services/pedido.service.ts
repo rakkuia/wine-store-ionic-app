@@ -17,6 +17,7 @@ export interface Pedido {
   representanteId: number;
   comissao: number;
   condicaoPagamento: string;
+  valorComissao: number;
 }
 
 @Injectable({ providedIn: 'root' })

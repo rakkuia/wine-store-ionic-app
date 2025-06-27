@@ -15,7 +15,6 @@ export class RepresentanteCadastroPage {
     nome: '',
     email: '',
     telefone: '',
-    comissao: 0
   };
 
   constructor(private modalCtrl: ModalController, private navParams: NavParams) {

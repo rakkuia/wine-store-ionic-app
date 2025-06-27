@@ -6,7 +6,10 @@ import { Cliente, ClienteService } from '../services/cliente.service';
 import { Vinho, VinhoService } from '../services/vinho.service';
 import { Pedido } from '../services/pedido.service';
 import { ModalController } from '@ionic/angular/standalone';
-import { Representante, RepresentanteService } from '../services/representantes.service';
+import {
+  Representante,
+  RepresentanteService,
+} from '../services/representantes.service';
 
 @Component({
   selector: 'app-pedido-cadastro',
@@ -16,6 +19,8 @@ import { Representante, RepresentanteService } from '../services/representantes.
   imports: [IonicModule, CommonModule, FormsModule],
 })
 export class PedidoCadastroPage implements OnInit {
+  quantidades: { [vinhoId: number]: number } = {};
+
   clientes: Cliente[] = [];
   vinhos: Vinho[] = [];
   representantes: Representante[] = [];
@@ -28,6 +33,7 @@ export class PedidoCadastroPage implements OnInit {
     itens: [],
     representanteId: 0,
     comissao: 0,
+    valorComissao: 0,
     total: 0,
   };
 
@@ -35,13 +41,58 @@ export class PedidoCadastroPage implements OnInit {
     private modalCtrl: ModalController,
     private clienteService: ClienteService,
     private vinhoService: VinhoService,
-    private representanteService: RepresentanteService 
+    private representanteService: RepresentanteService
   ) {}
 
   ngOnInit() {
     this.clientes = this.clienteService.getClientes();
     this.vinhos = this.vinhoService.getVinhos();
     this.representantes = this.representanteService.getRepresentantes();
+    if (this.pedido && this.pedido.itens) {
+      this.quantidades = {};
+      this.pedido.itens.forEach((item) => {
+        this.quantidades[item.vinhoId] = item.quantidade;
+      });
+    }
+  }
+
+  atualizarQuantidade(
+    vinho: Vinho,
+    quantidade: number,
+    comissaoPorcentagem: number
+  ) {
+    this.quantidades[vinho.id] = quantidade;
+
+    const idx = this.pedido.itens.findIndex((i) => i.vinhoId === vinho.id);
+
+    if (quantidade > 0) {
+      if (idx > -1) {
+        this.pedido.itens[idx].quantidade = quantidade;
+      } else {
+        this.pedido.itens.push({
+          vinhoId: vinho.id,
+          nomeVinho: vinho.nome,
+          preco: vinho.preco || 50,
+          quantidade,
+        });
+      }
+    } else if (idx > -1) {
+      this.pedido.itens.splice(idx, 1);
+    }
+    this.calcularTotal();
+  }
+
+  atualizarComissao() {
+    this.calcularTotal();
+  }
+
+  calcularTotal() {
+    this.pedido.total = this.pedido.itens.reduce(
+      (acc, item) => acc + item.preco * item.quantidade,
+      0
+    );
+    const percentual = this.pedido.comissao || 0;
+    this.pedido.valorComissao = (this.pedido.total * percentual) / 100;
   }
 
   toggleItem(vinho: Vinho, checked: boolean) {
@@ -59,13 +110,6 @@ export class PedidoCadastroPage implements OnInit {
     }
 
     this.calcularTotal();
-  }
-
-  calcularTotal() {
-    this.pedido.total = this.pedido.itens.reduce(
-      (acc, item) => acc + item.preco * item.quantidade,
-      0
-    );
   }
 
   salvar() {
