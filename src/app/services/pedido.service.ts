@@ -14,6 +14,8 @@ export interface Pedido {
   data: string;
   itens: PedidoItem[];
   total: number;
+  representanteId: number;
+  comissao: number;
   condicaoPagamento: string;
 }
 
@@ -32,14 +34,13 @@ export class PedidoService {
   }
 
   deletePedido(id: number) {
-    this.pedidos = this.pedidos.filter(p => p.id !== id);
+    this.pedidos = this.pedidos.filter((p) => p.id !== id);
   }
 
   updatePedido(pedidoAtualizado: Pedido) {
-  const index = this.pedidos.findIndex(p => p.id === pedidoAtualizado.id);
-  if (index > -1) {
-    this.pedidos[index] = pedidoAtualizado;
+    const index = this.pedidos.findIndex((p) => p.id === pedidoAtualizado.id);
+    if (index > -1) {
+      this.pedidos[index] = pedidoAtualizado;
+    }
   }
-}
-
 }

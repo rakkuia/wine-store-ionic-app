@@ -13,13 +13,14 @@
         <p>{{ pedido.data }} | {{ pedido.itens.length }} itens</p>
         <strong>Total: R$ {{ pedido.total | number:'1.2-2' }}</strong>
       </ion-label>
-      <ion-button
-        slot="end"
-        color="danger"
-        (click)="excluir(pedido); $event.stopPropagation()"
-      >
-        <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
+       <ion-buttons slot="end" *ngIf="admin">
+        <ion-button color="medium" (click)="editar(pedido)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="excluir(pedido)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-item>
   </ion-list>
 

@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Representantes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="abrirCadastro()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let representante of representantes">
+      <ion-item>
+        <ion-label>
+          <h2>{{ representante.nome }}</h2>
+          <p>Email: {{ representante.email }}</p>
+          <p>Telefone: {{ representante.telefone }}</p>
+        </ion-label>
+        <ion-buttons slot="end" *ngIf="admin">
+          <ion-button color="medium" (click)="abrirCadastro(representante)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="excluir(representante)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-item>
+  </ion-list>
+    <ion-button *ngIf="admin" expand="block" (click)="abrirCadastro()">Novo Representante</ion-button>
+</ion-content>

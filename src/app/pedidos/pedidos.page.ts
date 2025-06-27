@@ -7,6 +7,7 @@ import { AlertController } from '@ionic/angular/standalone';
 import { PedidoCadastroPage } from '../pedido-cadastro/pedido-cadastro.page';
 import { addIcons } from 'ionicons';
 import { createOutline, trashOutline } from 'ionicons/icons';
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-pedidos',
   templateUrl: './pedidos.page.html',
@@ -16,18 +17,23 @@ import { createOutline, trashOutline } from 'ionicons/icons';
 })
 export class PedidosPage implements OnInit {
   pedidos: Pedido[] = [];
+  admin: boolean = false;
 
   constructor(
     private pedidoService: PedidoService,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController
-  ) {   addIcons({
-        'create-outline': createOutline,
-        'trash-outline': trashOutline,
-      });}
+    private alertCtrl: AlertController,
+    private auth: AuthService
+  ) {
+    addIcons({
+      'create-outline': createOutline,
+      'trash-outline': trashOutline,
+    });
+  }
 
   ngOnInit() {
     this.pedidos = this.pedidoService.getPedidos();
+    this.admin = this.auth.getTipo() === 'admin';
   }
 
   async novoPedido() {

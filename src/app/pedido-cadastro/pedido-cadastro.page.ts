@@ -6,6 +6,7 @@ import { Cliente, ClienteService } from '../services/cliente.service';
 import { Vinho, VinhoService } from '../services/vinho.service';
 import { Pedido } from '../services/pedido.service';
 import { ModalController } from '@ionic/angular/standalone';
+import { Representante, RepresentanteService } from '../services/representantes.service';
 
 @Component({
   selector: 'app-pedido-cadastro',
@@ -15,8 +16,9 @@ import { ModalController } from '@ionic/angular/standalone';
   imports: [IonicModule, CommonModule, FormsModule],
 })
 export class PedidoCadastroPage implements OnInit {
- clientes: Cliente[] = [];
+  clientes: Cliente[] = [];
   vinhos: Vinho[] = [];
+  representantes: Representante[] = [];
   pedido: Pedido = {
     id: 0,
     clienteId: 0,
@@ -24,18 +26,22 @@ export class PedidoCadastroPage implements OnInit {
     data: '',
     condicaoPagamento: '',
     itens: [],
-    total: 0
+    representanteId: 0,
+    comissao: 0,
+    total: 0,
   };
 
   constructor(
     private modalCtrl: ModalController,
     private clienteService: ClienteService,
-    private vinhoService: VinhoService
+    private vinhoService: VinhoService,
+    private representanteService: RepresentanteService 
   ) {}
 
   ngOnInit() {
     this.clientes = this.clienteService.getClientes();
     this.vinhos = this.vinhoService.getVinhos();
+    this.representantes = this.representanteService.getRepresentantes();
   }
 
   toggleItem(vinho: Vinho, checked: boolean) {
@@ -44,10 +50,12 @@ export class PedidoCadastroPage implements OnInit {
         vinhoId: vinho.id,
         nomeVinho: vinho.nome,
         preco: vinho.preco || 50,
-        quantidade: 1
+        quantidade: 1,
       });
     } else {
-      this.pedido.itens = this.pedido.itens.filter(i => i.vinhoId !== vinho.id);
+      this.pedido.itens = this.pedido.itens.filter(
+        (i) => i.vinhoId !== vinho.id
+      );
     }
 
     this.calcularTotal();
@@ -61,7 +69,7 @@ export class PedidoCadastroPage implements OnInit {
   }
 
   salvar() {
-    const cliente = this.clientes.find(c => c.id === this.pedido.clienteId);
+    const cliente = this.clientes.find((c) => c.id === this.pedido.clienteId);
     if (cliente) this.pedido.clienteNome = cliente.nome;
     this.calcularTotal();
     this.modalCtrl.dismiss(this.pedido);

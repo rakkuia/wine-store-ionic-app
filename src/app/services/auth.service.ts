@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-export type PerfilUsuario = 'admin' | 'representante';
+export type PerfilUsuario = 'admin' | 'representante' | 'inst';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -16,6 +16,11 @@ export class AuthService {
       this.usuario = { nome: 'Representante', tipo: 'representante' };
       return true;
     }
+     if (email === 'inst' && senha === 'inst') {
+      this.isLoggedIn = true;
+      this.usuario = { nome: 'Institucional', tipo: 'inst' };
+      return true;
+    }
     return false;
   }
 
@@ -28,7 +33,7 @@ export class AuthService {
     return !!this.usuario;
   }
 
-  getTipo(): 'admin' | 'representante' | null {
+  getTipo(): 'admin' | 'representante' | 'inst' | null {
     return this.usuario?.tipo ?? null;
   }
 }

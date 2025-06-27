@@ -1,10 +1,25 @@
-<ion-header><ion-toolbar><ion-title>Novo Pedido</ion-title></ion-toolbar></ion-header>
+<ion-header
+  ><ion-toolbar><ion-title>Novo Pedido</ion-title></ion-toolbar></ion-header
+>
 
 <ion-content class="ion-padding">
   <ion-item>
     <ion-label position="stacked">Cliente</ion-label>
     <ion-select [(ngModel)]="pedido.clienteId">
-      <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">{{ cliente.nome }}</ion-select-option>
+      <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id"
+        >{{ cliente.nome }}</ion-select-option
+      >
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Representante</ion-label>
+    <ion-select [(ngModel)]="pedido.representanteId">
+      <ion-select-option
+        *ngFor="let representante of representantes"
+        [value]="representante.id"
+        >{{ representante.nome }}</ion-select-option
+      >
     </ion-select>
   </ion-item>
 
@@ -12,10 +27,16 @@
     <ion-label position="stacked">Condição de Pagamento</ion-label>
     <ion-input [(ngModel)]="pedido.condicaoPagamento"></ion-input>
   </ion-item>
-
+  <ion-item>
+    <ion-label position="stacked">Comissão do Representante</ion-label>
+    <ion-input [(ngModel)]="pedido.comissao"></ion-input>
+  </ion-item>
   <ion-list>
     <ion-item *ngFor="let vinho of vinhos">
-      <ion-checkbox slot="start" (ionChange)="toggleItem(vinho, $event.detail.checked)"></ion-checkbox>
+      <ion-checkbox
+        slot="start"
+        (ionChange)="toggleItem(vinho, $event.detail.checked)"
+      ></ion-checkbox>
       <ion-label>
         <h3>{{ vinho.nome }}</h3>
         <p>R$ {{ vinho.preco || 50 }}</p>
@@ -24,5 +45,7 @@
   </ion-list>
 
   <ion-button expand="full" (click)="salvar()">Salvar Pedido</ion-button>
-  <ion-button expand="full" color="light" (click)="cancelar()">Cancelar</ion-button>
+  <ion-button expand="full" color="light" (click)="cancelar()"
+    >Cancelar</ion-button
+  >
 </ion-content>
