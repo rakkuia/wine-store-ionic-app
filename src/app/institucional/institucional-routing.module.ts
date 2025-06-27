@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: InstitucionalPage
+  },  {
+    path: 'institucional',
+    loadChildren: () => import('./institucional/institucional.module').then( m => m.InstitucionalPageModule)
   }
+
 ];
 
 @NgModule({

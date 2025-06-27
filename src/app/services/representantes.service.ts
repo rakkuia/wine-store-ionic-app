@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface Representante {
   id: number;
@@ -9,25 +12,47 @@ export interface Representante {
 
 @Injectable({ providedIn: 'root' })
 export class RepresentanteService {
-  private representantes: Representante[] = [
-    { id: 1, nome: 'João Silva', email: 'joao@email.com', telefone: '(11) 99999-9999'}
-  ];
+  private apiUrl = 'http://localhost:3000/api/representantes';
 
-  getRepresentantes(): Representante[] {
-    return this.representantes;
+  constructor(private http: HttpClient) {}
+
+  getRepresentantes(): Observable<Representante[]> {
+    return this.http
+      .get<Representante[]>(this.apiUrl)
+      .pipe(catchError(this.handleError<Representante[]>('getRepresentantes', [])));
   }
 
-  addRepresentante(rep: Representante) {
-    rep.id = Date.now();
-    this.representantes.push(rep);
+  getRepresentante(id: number): Observable<Representante> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .get<Representante>(url)
+      .pipe(catchError(this.handleError<Representante>('getRepresentante')));
   }
 
-  updateRepresentante(rep: Representante) {
-    const idx = this.representantes.findIndex(r => r.id === rep.id);
-    if (idx > -1) this.representantes[idx] = rep;
+  addRepresentante(rep: Omit<Representante, 'id'>): Observable<Representante> {
+    return this.http
+      .post<Representante>(this.apiUrl, rep)
+      .pipe(catchError(this.handleError<Representante>('addRepresentante')));
   }
 
-  removeRepresentante(id: number) {
-    this.representantes = this.representantes.filter(r => r.id !== id);
+  updateRepresentante(rep: Representante): Observable<Representante> {
+    const url = `${this.apiUrl}/${rep.id}`;
+    return this.http
+      .put<Representante>(url, rep)
+      .pipe(catchError(this.handleError<Representante>('updateRepresentante')));
+  }
+
+  removeRepresentante(id: number): Observable<any> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .delete(url)
+      .pipe(catchError(this.handleError('removeRepresentante')));
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} falhou: ${error.message}`);
+      return of(result as T);
+    };
   }
 }

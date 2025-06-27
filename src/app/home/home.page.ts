@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 export class HomePage {
   tipo = '';
 
-  constructor(private auth: AuthService, private router: Router) {
+  constructor(public auth: AuthService, private router: Router) {
     this.tipo = this.auth.getTipo()!;
   }
 

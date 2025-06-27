@@ -26,12 +26,12 @@ export class PedidoCadastroPage implements OnInit {
   representantes: Representante[] = [];
   pedido: Pedido = {
     id: 0,
-    clienteId: 0,
+    cliente_id: 0,
     clienteNome: '',
     data: '',
     condicaoPagamento: '',
     itens: [],
-    representanteId: 0,
+    representante_id: 0,
     comissao: 0,
     valorComissao: 0,
     total: 0,
@@ -45,17 +45,30 @@ export class PedidoCadastroPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.clientes = this.clienteService.getClientes();
+    this.clienteService.getClientes().subscribe((clientes) => {
+      this.clientes = clientes;
+    });
     this.vinhoService.getVinhos().subscribe((vinhos) => {
       this.vinhos = vinhos;
     });
-    this.representantes = this.representanteService.getRepresentantes();
+    this.representanteService
+      .getRepresentantes()
+      .subscribe((representantes) => {
+        this.representantes = representantes;
+      });
     if (this.pedido && this.pedido.itens) {
       this.quantidades = {};
       this.pedido.itens.forEach((item) => {
         this.quantidades[item.vinhoId] = item.quantidade;
       });
     }
+
+    // if (this.pedido && this.pedido.itens && this.pedido.itens.length > 0) {
+    //   this.quantidades = {};
+    //   this.pedido.itens.forEach((item) => {
+    //     this.quantidades[item.vinhoId] = item.quantidade;
+    //   });
+    // }
   }
 
   atualizarQuantidade(
@@ -115,7 +128,7 @@ export class PedidoCadastroPage implements OnInit {
   }
 
   salvar() {
-    const cliente = this.clientes.find((c) => c.id === this.pedido.clienteId);
+    const cliente = this.clientes.find((c) => c.id === this.pedido.cliente_id);
     if (cliente) this.pedido.clienteNome = cliente.nome;
     this.calcularTotal();
     this.modalCtrl.dismiss(this.pedido);

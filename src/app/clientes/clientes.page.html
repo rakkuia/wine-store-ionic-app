@@ -9,7 +9,7 @@
     <ion-item *ngFor="let cliente of clientes">
       <ion-label>
         <h2>{{ cliente.nome }}</h2>
-        <p>{{ cliente.cidade }} - {{ cliente.estado }} | {{ cliente.responsavel }} | {{ cliente.contato }}</p>
+        <p>{{ cliente.cidade }} - {{ cliente.estado }}  | {{ cliente.contato }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="medium" (click)="abrirCadastro(cliente)">

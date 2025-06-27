@@ -7,7 +7,7 @@
 <ion-content class="ion-padding">
   <ion-item>
     <ion-label position="stacked">Cliente</ion-label>
-    <ion-select [(ngModel)]="pedido.clienteId">
+    <ion-select [(ngModel)]="pedido.cliente_id">
       <ion-select-option *ngFor="let cliente of clientes" [value]="cliente.id">
         {{ cliente.nome }}
       </ion-select-option>
@@ -17,7 +17,7 @@
   <ion-item>
     <ion-label position="stacked">Representante</ion-label>
     <ion-select
-      [(ngModel)]="pedido.representanteId"
+      [(ngModel)]="pedido.representante_id"
       (ionChange)="atualizarComissao()"
     >
       <ion-select-option

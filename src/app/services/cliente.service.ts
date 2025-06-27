@@ -1,4 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface Cliente {
   id: number;
@@ -13,34 +16,47 @@ export interface Cliente {
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
-  private clientes: Cliente[] = [
-    {
-      id: 1,
-      nome: 'Empório do Vinho',
-      documento: '12.345.678/0001-99',
-      endereco: 'Rua das Vinhas, 100',
-      cidade: 'Bento Gonçalves',
-      estado: 'RS',
-      responsavel: 'Carlos Silva',
-      contato: '(54) 99999-9999'
-    }
-  ];
+  private apiUrl = 'http://localhost:3000/api/clientes';
 
-  getClientes(): Cliente[] {
-    return this.clientes;
+  constructor(private http: HttpClient) {}
+
+  getClientes(): Observable<Cliente[]> {
+    return this.http
+      .get<Cliente[]>(this.apiUrl)
+      .pipe(catchError(this.handleError<Cliente[]>('getClientes', [])));
   }
 
-  addCliente(cliente: Cliente) {
-    cliente.id = Date.now();
-    this.clientes.push(cliente);
+  getCliente(id: number): Observable<Cliente> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .get<Cliente>(url)
+      .pipe(catchError(this.handleError<Cliente>('getCliente')));
   }
 
-  updateCliente(cliente: Cliente) {
-    const index = this.clientes.findIndex(c => c.id === cliente.id);
-    if (index > -1) this.clientes[index] = cliente;
+  addCliente(cliente: Omit<Cliente, 'id'>): Observable<Cliente> {
+    return this.http
+      .post<Cliente>(this.apiUrl, cliente)
+      .pipe(catchError(this.handleError<Cliente>('addCliente')));
   }
 
-  removeCliente(id: number) {
-    this.clientes = this.clientes.filter(c => c.id !== id);
+  updateCliente(cliente: Cliente): Observable<Cliente> {
+    const url = `${this.apiUrl}/${cliente.id}`;
+    return this.http
+      .put<Cliente>(url, cliente)
+      .pipe(catchError(this.handleError<Cliente>('updateCliente')));
+  }
+
+  removeCliente(id: number): Observable<any> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .delete(url)
+      .pipe(catchError(this.handleError('removeCliente')));
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} falhou: ${error.message}`);
+      return of(result as T);
+    };
   }
 }

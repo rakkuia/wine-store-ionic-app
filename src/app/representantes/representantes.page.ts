@@ -34,30 +34,38 @@ export class RepresentantesPage implements OnInit {
   }
 
   ngOnInit() {
-    this.representantes = this.representanteService.getRepresentantes();
-      this.admin = this.auth.getTipo() === 'admin';
-
+    this.carregarRepresentantes();
+    this.admin = this.auth.getTipo() === 'admin';
   }
 
- async abrirCadastro(rep?: Representante) {
-  const modal = await this.modalCtrl.create({
-    component: RepresentanteCadastroPage,
-    componentProps: { representante: rep ? { ...rep } : { id: null, nome: '', email: '', telefone: '', comissao: 0 } },
-  });
+  carregarRepresentantes() {
+    this.representanteService.getRepresentantes().subscribe((reps) => {
+      this.representantes = reps;
+    });
+  }
 
-  modal.onDidDismiss().then((result) => {
-    if (result.data) {
-      if (rep) {
-        this.representanteService.updateRepresentante(result.data);
-      } else {
-        this.representanteService.addRepresentante(result.data);
+  async abrirCadastro(rep?: Representante) {
+    const modal = await this.modalCtrl.create({
+      component: RepresentanteCadastroPage,
+      componentProps: { representante: rep ? { ...rep } : { id: null, nome: '', email: '', telefone: '', comissao: 0 } },
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        if (rep) {
+          this.representanteService.updateRepresentante(result.data).subscribe(() => {
+            this.carregarRepresentantes();
+          });
+        } else {
+          this.representanteService.addRepresentante(result.data).subscribe(() => {
+            this.carregarRepresentantes();
+          });
+        }
       }
-      this.representantes = this.representanteService.getRepresentantes();
-    }
-  });
+    });
 
-  await modal.present();
-}
+    await modal.present();
+  }
 
   async excluir(rep: Representante) {
     const alert = await this.alertCtrl.create({
@@ -68,8 +76,9 @@ export class RepresentantesPage implements OnInit {
         {
           text: 'Excluir',
           handler: () => {
-            this.representanteService.removeRepresentante(rep.id);
-            this.representantes = this.representanteService.getRepresentantes();
+            this.representanteService.removeRepresentante(rep.id).subscribe(() => {
+              this.carregarRepresentantes();
+            });
           },
         },
       ],

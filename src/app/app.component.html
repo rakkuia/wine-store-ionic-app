@@ -16,15 +16,38 @@
     <ion-content>
       <ion-list>
         <ion-item routerLink="/home" routerDirection="root">Home</ion-item>
-        <ion-item routerLink="/vinhos" routerDirection="root">Vinhos</ion-item>
-        <ion-item routerLink="/clientes" routerDirection="root"
+        <ion-item
+          routerLink="/vinhos"
+          routerDirection="root"
+          *ngIf="auth.getTipo() != 'inst'"
+          >Vinhos</ion-item
+        >
+        <ion-item
+          routerLink="/clientes"
+          routerDirection="root"
+          *ngIf="auth.getTipo() != 'inst'"
           >Clientes</ion-item
         >
-        <ion-item routerLink="/pedidos" routerDirection="root"
+        <ion-item
+          routerLink="/pedidos"
+          routerDirection="root"
+          *ngIf="auth.getTipo() != 'inst'"
           >Pedidos</ion-item
         >
-        <ion-item routerLink="/rotas" routerDirection="root"
+        <ion-item
+          routerLink="/rotas"
+          routerDirection="root"
+          *ngIf="auth.getTipo() != 'inst'"
           >Gerador de Rotas</ion-item
+        >
+        <ion-item routerLink="/institucional" routerDirection="root"
+          >Institucional</ion-item
+        >
+        <ion-item
+          routerLink="/representantes"
+          routerDirection="root"
+          *ngIf="auth.getTipo() != 'inst'"
+          >Representantes</ion-item
         >
         <ion-item (click)="logout()">Sair</ion-item>
       </ion-list>

@@ -8,6 +8,7 @@ import { PedidoCadastroPage } from '../pedido-cadastro/pedido-cadastro.page';
 import { addIcons } from 'ionicons';
 import { createOutline, trashOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
+
 @Component({
   selector: 'app-pedidos',
   templateUrl: './pedidos.page.html',
@@ -17,13 +18,9 @@ import { AuthService } from '../services/auth.service';
 })
 export class PedidosPage implements OnInit {
 
-
-
-contarItens(pedido: Pedido): number {
-  return pedido.itens.reduce((soma, item) => soma + item.quantidade, 0);
-}
   pedidos: Pedido[] = [];
   admin: boolean = false;
+
   constructor(
     private pedidoService: PedidoService,
     private modalCtrl: ModalController,
@@ -37,8 +34,18 @@ contarItens(pedido: Pedido): number {
   }
 
   ngOnInit() {
-    this.pedidos = this.pedidoService.getPedidos();
+    this.carregarPedidos();
     this.admin = this.auth.getTipo() === 'admin';
+  }
+
+carregarPedidos() {
+  this.pedidoService.getPedidos().subscribe((pedidos) => {
+    this.pedidos = pedidos;
+  });
+}
+
+  contarItens(pedido: Pedido): number {
+    return pedido.itens.reduce((soma, item) => soma + item.quantidade, 0);
   }
 
   async novoPedido() {
@@ -48,8 +55,11 @@ contarItens(pedido: Pedido): number {
 
     modal.onDidDismiss().then((res) => {
       if (res.data) {
-        this.pedidoService.addPedido(res.data);
-        this.pedidos = this.pedidoService.getPedidos();
+        this.pedidoService.addPedido(res.data).subscribe((pedidoSalvo) => {
+          // Não é possível atualizar a lista completa, pois não há endpoint para listar todos
+          // Você pode adicionar manualmente à lista local, se desejar:
+          this.pedidos.push(pedidoSalvo);
+        });
       }
     });
 
@@ -65,8 +75,11 @@ contarItens(pedido: Pedido): number {
         {
           text: 'Excluir',
           handler: () => {
-            this.pedidoService.deletePedido(pedido.id);
-            this.pedidos = this.pedidoService.getPedidos();
+            // Não há endpoint DELETE /api/pedidos/:id na sua API, então não é possível excluir via API.
+            // Se for implementado, use:
+            // this.pedidoService.deletePedido(pedido.id).subscribe(() => { ... });
+            // Por enquanto, apenas remova localmente:
+            this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
           },
         },
       ],
@@ -74,20 +87,33 @@ contarItens(pedido: Pedido): number {
     await alert.present();
   }
 
-  async editar(pedido: Pedido) {
-    const modal = await this.modalCtrl.create({
-      component: PedidoCadastroPage,
-      componentProps: { pedido: { ...pedido } },
-    });
+async editar(pedido: Pedido) {
+  console.log(pedido)
+  const modal = await this.modalCtrl.create({
+    component: PedidoCadastroPage,
+    componentProps: { pedido }, 
+  });
 
-    modal.onDidDismiss().then((res) => {
-      if (res.data) {
-        this.pedidoService.updatePedido(res.data);
-        this.pedidos = this.pedidoService.getPedidos();
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.atualizarPedido(result.data);
       }
-      console.log(this.pedidos)
     });
 
     await modal.present();
   }
+  atualizarPedido(pedido: Pedido) {
+      this.pedidoService.atualizarPedido(pedido).subscribe({
+        next: () => {
+          const index = this.pedidos.findIndex(v => v.id === pedido.id);
+          if (index > -1) {
+            this.pedidos[index] = pedido;
+            this.pedidos = [...this.pedidos]; 
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar pedido', err);
+        }
+      });
+    }
 }

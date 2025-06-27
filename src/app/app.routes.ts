@@ -66,4 +66,11 @@ export const routes: Routes = [
       import('./representantes/representantes.page').then((m) => m.RepresentantesPage),
 //    canActivate: [AuthGuard]
   },
+   {
+    path: 'institucional',
+    loadComponent: () =>
+      import('./institucional/institucional.page').then((m) => m.InstitucionalPage),
+//    canActivate: [AuthGuard]
+  },
+  
 ];

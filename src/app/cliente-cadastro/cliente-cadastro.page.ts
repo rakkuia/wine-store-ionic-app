@@ -11,13 +11,12 @@ import { IonicModule, ModalController, NavParams } from '@ionic/angular';
 })
 export class ClienteCadastroPage implements OnInit {
   cliente: any = {
-    id: null,
     nome: '',
     documento: '',
     endereco: '',
     cidade: '',
     estado: '',
-    responsavel: '',
+    representante_id: '',
     contato: ''
   };
 
@@ -26,10 +25,20 @@ export class ClienteCadastroPage implements OnInit {
   ngOnInit() {
     const recebido = this.navParams.get('cliente');
     if (recebido) this.cliente = { ...recebido };
+        if (!this.cliente) {
+      this.cliente = {
+        nome: '',
+        documento: '',
+        endereco: '',
+        cidade: '',
+        estado: '',
+        // responsavel: '',
+        contato: ''
+      };
+    }
   }
 
   salvar() {
-    if (!this.cliente.id) this.cliente.id = Date.now();
     this.modalCtrl.dismiss(this.cliente);
   }
 

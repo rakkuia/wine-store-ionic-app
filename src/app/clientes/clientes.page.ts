@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, IonicModule } from '@ionic/angular';
+import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Cliente, ClienteService } from '../services/cliente.service';
-import { IonMenuToggle, ModalController } from '@ionic/angular/standalone';
-import { ClienteCadastroPage } from '../cliente-cadastro/cliente-cadastro.page';
 import { createOutline, trashOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { ClienteCadastroPage } from '../cliente-cadastro/cliente-cadastro.page';
+
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.page.html',
@@ -29,7 +29,18 @@ export class ClientesPage implements OnInit {
   }
 
   ngOnInit() {
-    this.clientes = this.clienteService.getClientes();
+    this.carregarClientes();
+  }
+
+  carregarClientes() {
+    this.clienteService.getClientes().subscribe({
+      next: (clientes) => {
+        this.clientes = clientes;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar clientes', err);
+      }
+    });
   }
 
   async abrirCadastro(cliente?: Cliente) {
@@ -40,12 +51,27 @@ export class ClientesPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
+        const clienteData: Cliente = result.data;
+        
         if (cliente) {
-          this.clienteService.updateCliente(result.data);
+          this.clienteService.updateCliente(clienteData).subscribe({
+            next: () => {
+              this.carregarClientes(); 
+            },
+            error: (err) => {
+              console.error('Erro ao atualizar cliente', err);
+            }
+          });
         } else {
-          this.clienteService.addCliente(result.data);
+          this.clienteService.addCliente(clienteData).subscribe({
+            next: () => {
+              this.carregarClientes(); 
+            },
+            error: (err) => {
+              console.error('Erro ao adicionar cliente', err);
+            }
+          });
         }
-        this.clientes = this.clienteService.getClientes();
       }
     });
 
@@ -61,8 +87,14 @@ export class ClientesPage implements OnInit {
         {
           text: 'Excluir',
           handler: () => {
-            this.clienteService.removeCliente(cliente.id);
-            this.clientes = this.clienteService.getClientes();
+            this.clienteService.removeCliente(cliente.id).subscribe({
+              next: () => {
+                this.clientes = this.clientes.filter(c => c.id !== cliente.id);
+              },
+              error: (err) => {
+                console.error('Erro ao remover cliente', err);
+              }
+            });
           },
         },
       ],

@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface PedidoItem {
   vinhoId: number;
@@ -9,12 +12,12 @@ export interface PedidoItem {
 
 export interface Pedido {
   id: number;
-  clienteId: number;
+  cliente_id: number;
   clienteNome: string;
   data: string;
   itens: PedidoItem[];
   total: number;
-  representanteId: number;
+  representante_id: number;
   comissao: number;
   condicaoPagamento: string;
   valorComissao: number;
@@ -22,26 +25,39 @@ export interface Pedido {
 
 @Injectable({ providedIn: 'root' })
 export class PedidoService {
-  private pedidos: Pedido[] = [];
+  private apiUrl = 'http://localhost:3000/api/pedidos';
 
-  getPedidos(): Pedido[] {
-    return this.pedidos;
+  constructor(private http: HttpClient) {}
+
+  addPedido(pedido: Pedido): Observable<Pedido> {
+    return this.http
+      .post<Pedido>(this.apiUrl, pedido)
+      .pipe(catchError(this.handleError<Pedido>('addPedido')));
   }
 
-  addPedido(pedido: Pedido) {
-    pedido.id = Date.now();
-    pedido.data = new Date().toISOString().split('T')[0];
-    this.pedidos.push(pedido);
+  getPedido(id: number): Observable<Pedido> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http
+      .get<Pedido>(url)
+      .pipe(catchError(this.handleError<Pedido>('getPedido')));
   }
 
-  deletePedido(id: number) {
-    this.pedidos = this.pedidos.filter((p) => p.id !== id);
+  getPedidos(): Observable<Pedido[]> {
+    return this.http
+      .get<Pedido[]>(this.apiUrl)
+      .pipe(catchError(this.handleError<Pedido[]>('getPedidos', [])));
+  }
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} falhou: ${error.message}`);
+      return of(result as T);
+    };
   }
 
-  updatePedido(pedidoAtualizado: Pedido) {
-    const index = this.pedidos.findIndex((p) => p.id === pedidoAtualizado.id);
-    if (index > -1) {
-      this.pedidos[index] = pedidoAtualizado;
-    }
-  }
+  atualizarPedido(pedido: Pedido): Observable<Pedido> {
+  const url = `${this.apiUrl}/${pedido.id}`;
+  return this.http
+    .put<Pedido>(url, pedido)
+    .pipe(catchError(this.handleError<Pedido>('atualizarPedido')));
+}
 }
